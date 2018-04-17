@@ -17,9 +17,16 @@ namespace Microsoft.Azure.WebJobs.Script.WebHost.Models
 
         public AssignmentContext Decrypt(string key)
         {
-            var encryptionKey = Convert.FromBase64String(key);
-            var decrypted = SimpleWebTokenHelper.Decrypt(encryptionKey, EncryptedContext);
-            return JsonConvert.DeserializeObject<AssignmentContext>(decrypted);
+            try
+            {
+                var encryptionKey = Convert.FromBase64String(key);
+                var decrypted = SimpleWebTokenHelper.Decrypt(encryptionKey, EncryptedContext);
+                return JsonConvert.DeserializeObject<AssignmentContext>(decrypted);
+            }
+            catch
+            {
+                return JsonConvert.DeserializeObject<AssignmentContext>(EncryptedContext);
+            }
         }
     }
 }
